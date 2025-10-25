@@ -12,7 +12,7 @@ public class TestStudentApp {
             sservice.saveStudentsToFile();
             sservice.displayAllStudents();
         } catch (LowAttendanceException e) {
-            System.out.println("⚠️ Exception: " + e.getMessage());
+            System.out.println("Exception: " + e.getMessage());
         }
     }
 }

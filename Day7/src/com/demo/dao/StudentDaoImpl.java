@@ -11,7 +11,7 @@ public class StudentDaoImpl implements StudentDao {
     public void saveAll(List<Student> slist) throws IOException {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE_NAME))) {
             oos.writeObject(slist);
-            System.out.println("✅ Students saved successfully to file.");
+            System.out.println(" Students saved successfully to file.");
         }
     }
 

@@ -45,7 +45,7 @@ public class StudentServiceImpl implements StudentService {
         try {
             sdao.saveAll(slist);
         } catch (IOException e) {
-            System.out.println("❌ Error saving students: " + e.getMessage());
+            System.out.println(" Error saving students: " + e.getMessage());
         }
     }
 
@@ -53,10 +53,10 @@ public class StudentServiceImpl implements StudentService {
     public void displayAllStudents() {
         try {
             List<Student> list = sdao.readAll();
-            System.out.println("\n📚 Students from file:");
+            System.out.println("\n Students from file:");
             list.forEach(System.out::println);
         } catch (Exception e) {
-            System.out.println("❌ Error reading file: " + e.getMessage());
+            System.out.println(" Error reading file: " + e.getMessage());
         }
     }
 }
