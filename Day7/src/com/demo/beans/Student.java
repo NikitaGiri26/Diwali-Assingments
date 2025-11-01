@@ -1,64 +1,84 @@
 package com.demo.beans;
 
 import java.io.Serializable;
+import com.demo.exception.LowAttendanceException;
 
 public class Student implements Serializable {
-    private int rollno;
-    private String sname;
-    private String course;
-    private double attendancePercentage;
-    private double score;
-    private String grade;
+	private int rollno;
+	private String sname;
+	private String course;
+	private double attendance_percentage;
+	private double score;
 
-    public Student() {
-        super();
-    }
+	public Student() {
+	}
 
-    public Student(int rollno, String sname, String course, double attendancePercentage, double score) {
-        super();
-        this.rollno = rollno;
-        this.sname = sname;
-        this.course = course;
-        this.attendancePercentage = attendancePercentage;
-        this.score = score;
-        this.grade = calculateGrade();
-    }
+	public Student(int rollno, String sname, String course, double attendance_percentage, double score) {
+		this.rollno = rollno;
+		this.sname = sname;
+		this.course = course;
+		this.attendance_percentage = attendance_percentage;
+		this.score = score;
+	}
 
-    public String calculateGrade() {
-        if (attendancePercentage < 60) {
-            grade = "Fail (Low Attendance)";
-        } else if (score >= 85)
-            grade = "A";
-        else if (score >= 70)
-            grade = "B";
-        else if (score >= 50)
-            grade = "C";
-        else
-            grade = "Fail";
-        return grade;
-    }
+	public int getRollno() {
+		return rollno;
+	}
 
-    // Getters and Setters
-    public int getRollno() { return rollno; }
-    public void setRollno(int rollno) { this.rollno = rollno; }
+	public String getSname() {
+		return sname;
+	}
 
-    public String getSname() { return sname; }
-    public void setSname(String sname) { this.sname = sname; }
+	public String getCourse() {
+		return course;
+	}
 
-    public String getCourse() { return course; }
-    public void setCourse(String course) { this.course = course; }
+	public double getAttendance_percentage() {
+		return attendance_percentage;
+	}
 
-    public double getAttendancePercentage() { return attendancePercentage; }
-    public void setAttendancePercentage(double attendancePercentage) { this.attendancePercentage = attendancePercentage; }
+	public double getScore() {
+		return score;
+	}
 
-    public double getScore() { return score; }
-    public void setScore(double score) { this.score = score; }
+	public void setRollno(int rollno) {
+		this.rollno = rollno;
+	}
 
-    public String getGrade() { return grade; }
+	public void setSname(String sname) {
+		this.sname = sname;
+	}
 
-    @Override
-    public String toString() {
-        return "Student [rollno=" + rollno + ", sname=" + sname + ", course=" + course +
-                ", attendance=" + attendancePercentage + "%, score=" + score + ", grade=" + grade + "]";
-    }
+	public void setCourse(String course) {
+		this.course = course;
+	}
+
+	public void setAttendance_percentage(double attendance_percentage) {
+		this.attendance_percentage = attendance_percentage;
+	}
+
+	public void setScore(double score) {
+		this.score = score;
+	}
+
+	public String calculateGrade() throws LowAttendanceException {
+		if (attendance_percentage < 60)
+			throw new LowAttendanceException("Attendance below 60%! Grade cannot be calculated.");
+		if (score >= 90)
+			return "A+";
+		else if (score >= 80)
+			return "A";
+		else if (score >= 70)
+			return "B";
+		else if (score >= 60)
+			return "C";
+		else
+			return "D";
+	}
+
+	@Override
+	public String toString() {
+		return rollno + " | " + sname + " | " + course + " | Attendance: " + attendance_percentage + "% | Score: "
+				+ score;
+	}
 }

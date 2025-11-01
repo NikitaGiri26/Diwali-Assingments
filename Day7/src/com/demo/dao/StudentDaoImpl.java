@@ -1,24 +1,73 @@
 package com.demo.dao;
 
 import java.io.*;
-import java.util.List;
+import java.util.*;
 import com.demo.beans.Student;
 
 public class StudentDaoImpl implements StudentDao {
-    private static final String FILE_NAME = "students.dat";
+	static List<Student> slist = new ArrayList<>();
 
-    @Override
-    public void saveAll(List<Student> slist) throws IOException {
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE_NAME))) {
-            oos.writeObject(slist);
-            System.out.println(" Students saved successfully to file.");
-        }
-    }
+	@Override
+	public void readFile(String fname) {
+		File f = new File(fname);
+		if (!f.exists())
+			return;
+		try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fname))) {
+			while (true) {
+				Student s = (Student) ois.readObject();
+				slist.add(s);
+			}
+		} catch (EOFException e) {
+			// reached end of file
+		} catch (Exception e) {
+			System.out.println("Error reading file: " + e.getMessage());
+		}
+	}
 
-    @Override
-    public List<Student> readAll() throws IOException, ClassNotFoundException {
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(FILE_NAME))) {
-            return (List<Student>) ois.readObject();
-        }
-    }
+	@Override
+	public boolean addStudent(Student s) {
+		return slist.add(s);
+	}
+
+	@Override
+	public boolean deleteByRoll(int roll) {
+		return slist.removeIf(s -> s.getRollno() == roll);
+	}
+
+	@Override
+	public boolean modifyByRoll(int roll, double score, double att) {
+		for (Student s : slist) {
+			if (s.getRollno() == roll) {
+				s.setScore(score);
+				s.setAttendance_percentage(att);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public Student getByRoll(int roll) {
+		for (Student s : slist)
+			if (s.getRollno() == roll)
+				return s;
+		return null;
+	}
+
+	@Override
+	public List<Student> getAll() {
+		return slist;
+	}
+
+	@Override
+	public void writeFile(String fname) {
+		try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fname))) {
+			for (Student s : slist) {
+				oos.writeObject(s);
+			}
+		} catch (IOException e) {
+			System.out.println("Error writing file: " + e.getMessage());
+		}
+	}
+
 }

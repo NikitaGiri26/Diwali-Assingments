@@ -1,62 +1,72 @@
 package com.demo.service;
 
-import java.io.IOException;
 import java.util.*;
 import com.demo.beans.Student;
-import com.demo.beans.LowAttendanceException;
 import com.demo.dao.StudentDao;
 import com.demo.dao.StudentDaoImpl;
+import com.demo.comparators.AttendanceComparator;
 
 public class StudentServiceImpl implements StudentService {
-    private List<Student> slist;
-    private StudentDao sdao;
+	private StudentDao sdao = new StudentDaoImpl();
+	private Scanner sc = new Scanner(System.in);
 
-    public StudentServiceImpl() {
-        slist = new ArrayList<>();
-        sdao = new StudentDaoImpl();
-    }
+	@Override
+	public void readFile(String fname) {
+		sdao.readFile(fname);
+	}
 
-    @Override
-    public void addStudents() throws LowAttendanceException {
-        Scanner sc = new Scanner(System.in);
-        for (int i = 1; i <= 10; i++) {
-            System.out.println("Enter details for Student " + i);
-            System.out.print("Roll No: ");
-            int roll = sc.nextInt();
-            System.out.print("Name: ");
-            String name = sc.next();
-            System.out.print("Course: ");
-            String course = sc.next();
-            System.out.print("Attendance Percentage: ");
-            double att = sc.nextDouble();
-            System.out.print("Score: ");
-            double score = sc.nextDouble();
+	@Override
+	public boolean addNewStudent() {
+		try {
+			System.out.print("Enter Roll No: ");
+			int r = sc.nextInt();
+			System.out.print("Enter Name: ");
+			String n = sc.next();
+			System.out.print("Enter Course: ");
+			String c = sc.next();
+			System.out.print("Enter Attendance Percentage: ");
+			double att = sc.nextDouble();
+			System.out.print("Enter Score: ");
+			double score = sc.nextDouble();
+			Student s = new Student(r, n, c, att, score);
+			return sdao.addStudent(s);
+		} catch (Exception e) {
+			System.out.println("Error adding student: " + e.getMessage());
+			sc.nextLine();
+			return false;
+		}
+	}
 
-            if (att < 60)
-                throw new LowAttendanceException("Attendance below 60% for Roll No: " + roll);
+	@Override
+	public boolean deleteByRoll(int roll) {
+		return sdao.deleteByRoll(roll);
+	}
 
-            slist.add(new Student(roll, name, course, att, score));
-        }
-        slist.sort((s1, s2) -> Double.compare(s2.getAttendancePercentage(), s1.getAttendancePercentage())); // descending
-    }
+	@Override
+	public boolean modifyByRoll(int roll, double score, double att) {
+		return sdao.modifyByRoll(roll, score, att);
+	}
 
-    @Override
-    public void saveStudentsToFile() {
-        try {
-            sdao.saveAll(slist);
-        } catch (IOException e) {
-            System.out.println(" Error saving students: " + e.getMessage());
-        }
-    }
+	@Override
+	public Student getByRoll(int roll) {
+		return sdao.getByRoll(roll);
+	}
 
-    @Override
-    public void displayAllStudents() {
-        try {
-            List<Student> list = sdao.readAll();
-            System.out.println("\n Students from file:");
-            list.forEach(System.out::println);
-        } catch (Exception e) {
-            System.out.println(" Error reading file: " + e.getMessage());
-        }
-    }
+	@Override
+	public List<Student> getAll() {
+		return sdao.getAll();
+	}
+
+	@Override
+	public List<Student> getAllSortedByAttendance() {
+		List<Student> list = new ArrayList<>(sdao.getAll());
+		Collections.sort(list, new AttendanceComparator());
+		return list;
+	}
+
+	@Override
+	public void writeFile(String fname) {
+		sdao.writeFile(fname);
+	}
+
 }
